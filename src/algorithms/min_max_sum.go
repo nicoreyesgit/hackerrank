@@ -12,3 +12,8 @@ func MinMaxSum(arr []int32) string {
 	max := int64(arr[l-1]) + int64(arr[l-2]) + int64(arr[l-3]) + int64(arr[l-4])
 	return fmt.Sprintf("%d %d", min, max)
 }
+
+func MinMaxSumUnsorted(arr []int32) string {
+
+	return ""
+}
