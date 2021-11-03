@@ -1,4 +1,4 @@
-package algorithms
+package easy
 
 import (
 	"fmt"
@@ -11,9 +11,4 @@ func MinMaxSum(arr []int32) string {
 	min := int64(arr[0]) + int64(arr[1]) + int64(arr[2]) + int64(arr[3])
 	max := int64(arr[l-1]) + int64(arr[l-2]) + int64(arr[l-3]) + int64(arr[l-4])
 	return fmt.Sprintf("%d %d", min, max)
-}
-
-func MinMaxSumUnsorted(arr []int32) string {
-
-	return ""
 }
