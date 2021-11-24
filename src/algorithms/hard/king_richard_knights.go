@@ -25,7 +25,7 @@ func KingRichardKnights(n int32, commands [][]int32, knights []int32) [][]int32 
 		initialIndex := command[1] - 1
 		maxIndex := command[2] + command[1] - 1
 		// this is to include all sub group of knights that should be moved
-		for s := maxIndex - initialIndex; s > 1; s = maxIndex - initialIndex {
+		for s := maxIndex - initialIndex; s >= 1; s = maxIndex - initialIndex {
 			// this is to do the 4 moves of a square
 			for i := 0; i < 4; i++ {
 				maxValue := maxIndex
