@@ -13,8 +13,6 @@ import "fmt"
 func KingRichardKnights(n int32, commands [][]int32, knights []int32) [][]int32 {
 	// create the knight formation
 	initialFormation := knightsArmy(n)
-	fmt.Println("the initial formation")
-	printFormation(initialFormation)
 	// this for go through the all commands
 	for move := 0; move < len(commands); move++ {
 		// clone the army
@@ -24,7 +22,7 @@ func KingRichardKnights(n int32, commands [][]int32, knights []int32) [][]int32 
 		initialLine := command[0] - 1
 		initialIndex := command[1] - 1
 		maxIndex := command[2] + command[1] - 1
-		// this is to include all sub group of knights that should be moved
+		// this is to include all cluster of knights that should be moved
 		for s := maxIndex - initialIndex; s >= 1; s = maxIndex - initialIndex {
 			// this is to do the 4 moves of a square
 			for i := 0; i < 4; i++ {
@@ -56,11 +54,29 @@ func KingRichardKnights(n int32, commands [][]int32, knights []int32) [][]int32 
 		}
 		initialFormation = newFormation
 	}
-	fmt.Println("the new formation is")
-	printFormation(initialFormation)
-	return initialFormation
+	return searchValue(initialFormation, knights)
 }
 
+func searchValue(army [][]int32, knights []int32) [][]int32 {
+	result := make([][]int32, len(knights))
+	for l, line := range army {
+		ki, li := 0, 0
+		for li < len(line) {
+			if ki > len(knights)-1 {
+				li++
+				ki = 0
+			} else if knights[ki] != -1 && line[li] == knights[ki] {
+				result[ki] = []int32{int32(l + 1), int32(li) + 1}
+				knights[ki] = -1
+				ki++
+				continue
+			} else {
+				ki++
+			}
+		}
+	}
+	return result
+}
 func knightsArmy(n int32) [][]int32 {
 	soldiers := make([][]int32, n)
 	var lastV int32
@@ -75,12 +91,6 @@ func knightsArmy(n int32) [][]int32 {
 	return soldiers
 }
 
-func printFormation(l [][]int32) {
-	for j := 0; j < len(l); j++ {
-		fmt.Println(l[j])
-	}
-}
-
 func cloneArmy(a [][]int32) [][]int32 {
 	l := len(a)
 	r := make([][]int32, l)
@@ -90,4 +100,10 @@ func cloneArmy(a [][]int32) [][]int32 {
 		r[i] = newA
 	}
 	return r
+}
+
+func printFormation(l [][]int32) {
+	for j := 0; j < len(l); j++ {
+		fmt.Println(l[j])
+	}
 }
