@@ -2,7 +2,7 @@ package hard
 
 import (
 	"fmt"
-	"sort"
+	"sync"
 )
 
 type replace struct {
@@ -21,17 +21,18 @@ type replace struct {
 func KingRichardKnights(n uint64, commands [][]uint64, knights []uint64) [][]uint64 {
 	// create the knight formation
 	initialFormation := knightsArmy(n)
-	sort.Slice(knights, func(i, j int) bool {
-		return knights[i] < knights[j]
-	})
 	// this for go through the all commands
 	for _, command := range commands {
 		line := command[0] - 1
 		initialLine := command[0] - 1
 		initialIndex := command[1] - 1
 		maxIndex := command[2] + command[1] - 1
+		square := maxIndex / 2
+		waiter := sync.WaitGroup{}
+		waiter.Add(int(square))
 		// this is to include all cluster of knights that should be moved
-		for s := int64(maxIndex - initialIndex); s >= 1; s = int64(maxIndex - initialIndex) {
+		for t := uint64(0); t < square; t++ {
+			s := int64(maxIndex - initialIndex)
 			rep := replace{
 				first:  make([]uint64, s+1),
 				second: make([]uint64, s+1),
@@ -69,19 +70,24 @@ func KingRichardKnights(n uint64, commands [][]uint64, knights []uint64) [][]uin
 			initialLine++
 			line++
 			maxIndex--
+			waiter.Done()
 		}
+		waiter.Wait()
 	}
 	return searchValue(initialFormation, knights)
 }
 
 func searchValue(army [][]uint64, knights []uint64) [][]uint64 {
 	result := make([][]uint64, len(knights))
+	count := 0
 	for l, line := range army {
 		ki, li := 0, 0
 		for li < len(line) {
+			count++
 			if ki > len(knights)-1 {
 				li++
 				ki = 0
+				// TODO: improve the algorithm to exclude in the search the knights already found
 			} else if line[li] == knights[ki] {
 				result[ki] = []uint64{uint64(l + 1), uint64(li) + 1}
 				ki++
@@ -91,11 +97,13 @@ func searchValue(army [][]uint64, knights []uint64) [][]uint64 {
 			}
 		}
 	}
+	fmt.Println(count)
 	return result
 }
 func knightsArmy(n uint64) [][]uint64 {
 	soldiers := make([][]uint64, n)
 	var lastV uint64
+	// TODO: improve the algorithm to remove one 'for'
 	for i := uint64(0); i < n; i++ {
 		line := make([]uint64, n)
 		//go func(index int64) {
@@ -107,17 +115,6 @@ func knightsArmy(n uint64) [][]uint64 {
 		//}(i)
 	}
 	return soldiers
-}
-
-func cloneArmy(a [][]uint64) [][]uint64 {
-	l := len(a)
-	r := make([][]uint64, l)
-	for i := 0; i < l; i++ {
-		newA := make([]uint64, len(a[i]))
-		copy(newA, a[i])
-		r[i] = newA
-	}
-	return r
 }
 
 func printFormation(l [][]uint64) {
