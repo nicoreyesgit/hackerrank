@@ -1,3 +1,3 @@
-module github.com/hackerrank
+module github.com/nicoreyesgit/hackerrank
 
-go 1.16
+go 1.19

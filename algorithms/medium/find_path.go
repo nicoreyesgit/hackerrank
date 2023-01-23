@@ -19,6 +19,7 @@ func FindPathWithRecursion(way []string, start Point, end Point) []Point {
 	for i := range seen {
 		seen[i] = make([]bool, len(way[i]))
 	}
+
 	i, p := findPathRecursion(way, start, end, path, seen)
 	if i {
 		return p
@@ -35,7 +36,9 @@ func findPathRecursion(way []string, curr Point, end Point, path []Point, seen [
 
 	if curr.X == end.X && curr.Y == end.Y {
 		path = append(path, end)
+
 		return true, path
+
 	}
 
 	if seen[curr.Y][curr.X] {
@@ -56,6 +59,7 @@ func findPathRecursion(way []string, curr Point, end Point, path []Point, seen [
 			return true, fullPath
 		}
 	}
+
 	path = path[:len(path)-1]
 
 	return false, path

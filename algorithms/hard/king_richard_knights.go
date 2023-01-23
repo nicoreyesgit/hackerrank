@@ -2,7 +2,6 @@ package hard
 
 import (
 	"fmt"
-	"sync"
 )
 
 type replace struct {
@@ -11,13 +10,14 @@ type replace struct {
 }
 
 // KingRichardKnights https://www.hackerrank.com/challenges/king-richards-knights/problem?h_r=next-challenge&h_v=zen
-// the first input the large of the array
-// the second was modified by me on the template of the HackerRank page and changed to include the commands
-// they are the move that the king want to do:
-// this size should be 3 and the first value is the line where he want to start to move
-// the second value is the first soldier to move
-// the third value is how many soldiers (starting from the second value) will move
-// knights that the king want to find after the moves
+// * the first input the large of the array
+// * the second was modified by me on the template of the HackerRank page and changed to include the commands
+// * they are the move that the king want to do:
+//   - this length should be 3 and the first value is the line where he want to start to move
+//   - the second value is the first soldier to move
+//   - the third value is how many soldiers (starting from the second value) will be moved
+//
+// * knights = kinghts that the king want to find after the moves
 func KingRichardKnights(n uint64, commands [][]uint64, knights []uint64) [][]uint64 {
 	// create the knight formation
 	initialFormation := knightsArmy(n)
@@ -27,11 +27,8 @@ func KingRichardKnights(n uint64, commands [][]uint64, knights []uint64) [][]uin
 		initialLine := command[0] - 1
 		initialIndex := command[1] - 1
 		maxIndex := command[2] + command[1] - 1
-		square := maxIndex / 2
-		waiter := sync.WaitGroup{}
-		waiter.Add(int(square))
 		// this is to include all cluster of knights that should be moved
-		for t := uint64(0); t < square; t++ {
+		for t := uint64(0); t < maxIndex/2; t++ {
 			s := int64(maxIndex - initialIndex)
 			rep := replace{
 				first:  make([]uint64, s+1),
@@ -70,9 +67,7 @@ func KingRichardKnights(n uint64, commands [][]uint64, knights []uint64) [][]uin
 			initialLine++
 			line++
 			maxIndex--
-			waiter.Done()
 		}
-		waiter.Wait()
 	}
 	return searchValue(initialFormation, knights)
 }
